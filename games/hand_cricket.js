@@ -9,7 +9,7 @@ let isEnd = false;
 function playerShoot() {
   console.log("\n\n\n\n\n\n\n\n");
   const status = isBatting ? "Batting🏏" : "Bowling☄️";
-  console.log("\t\t\t\t\t",status);
+  console.log("\t\t\t\t\t", status);
   const userInput = parseInt(prompt("\t\t\t\t     Shoot Number:"));
   return userInput > 0 && userInput < 7 ? userInput : 1;
 }
@@ -43,15 +43,15 @@ function clourNumber(number) {
   return stringNumber;
 }
 
-function displayWinOrLose(){
-  if (isEnd ) {
+function displayWinOrLose() {
+  if (isEnd) {
     if (userScore === botScore) {
       console.log(" Match Draw ⚠️", userScore, "/", botScore, "\n\n\n");
     } else if (userScore > botScore) {
       console.log(" YOU WON 🏆🏆🏆🏆", userScore, "/", botScore, "\n\n\n");
     } else {
-  
-      console.log("YOU LOSE ‼️", userScore,"/", botScore, "\n\n\n");
+
+      console.log("YOU LOSE ‼️", userScore, "/", botScore, "\n\n\n");
     }
     if (!confirm("Should Stop?")) {
       play();
@@ -63,12 +63,12 @@ function displayWinOrLose(){
 
 function displayResult(isWicket, score, playerScore, computerScore) {
   console.clear();
-//  const status = isBatting ? "Batting🏏" : "Bowling☄️";
+  //  const status = isBatting ? "Batting🏏" : "Bowling☄️";
 
   if (isWicket) {
-    console.log(playerScore, "  :  ", computerScore);
-    console.log("OUT !!!");
-    console.log(clourNumber(score));
+    console.log("\t", playerScore, "  :  ", computerScore);
+    console.log("\tOUT !!!");
+    console.log("\t", clourNumber(score));
     currentScore = 0;
     return displayWinOrLose();
   } else {
@@ -110,12 +110,12 @@ function play() {
   isBatting = chooseBat();
   // state = isBatting ? "Batting🏏" : "Bowling☄️";
   // console.log(state);
-  
+
   while (shouldContinue) {
     const playerScore = playerShoot();
     const computerScore = computerShoot();
     const wicket = checkWicket(computerScore, playerScore);
-    currentScore = wicket ? currentScore : currentScore + playerScore;
+    currentScore = wicket ? currentScore : currentScore + (isBatting ? playerScore : computerScore);
     shouldContinue = displayResult(wicket, currentScore, playerScore, computerScore);
     //firstPlay = firstPlay === true && wicket === true ? false : true;
     isBatting = wicket === true ? !isBatting : isBatting;
