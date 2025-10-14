@@ -91,9 +91,10 @@ function result(length) {
     playerLayout[playerPosition] = 3;
     console.clear();
     hideElements(playerLayout);
-    play(length);
+    // play(length);
+    return;
   }
-  if (playerPosition < length ** 2 && playerPosition > (length ** 2) - length) {
+  if (playerPosition < length ** 2 && playerPosition > (length ** 2) - (length + 1)) {
     console.log("You Won!");
     if (confirm("Wanna to play again?")) {
       bomb = 0;
