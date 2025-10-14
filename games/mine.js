@@ -2,8 +2,9 @@ let mineLayout = [];
 let playerLayout = [];
 let playerPosition = 0;
 let rout = [];
-let chance = 0;
+let health = 0;
 let bomb = 0;
+let level = 2;
 
 function layoutPrint(length) {
   const starting = 1 + Math.floor(Math.random() * length - 1);
@@ -40,13 +41,15 @@ function replaceRout(layout, routLayout) {
 function displayLayout(layout) {
   const length = layout.length ** 0.5;
   console.log("\n\n\n\n");
+  console.log("\t\t\tHealth:", "❤️".repeat(health), "\n");
+  console.log("\t\t\tLevel", level - 1, "\n");
   for (let index = 0; index < length; index++) {
     const starting = index * length;
     let lineString = "";
     for (let line = starting; line < starting + length; line++) {
       lineString += " " + layout[line];
     }
-    console.log("\t\t\t\t",lineString);
+    console.log("\t\t\t", lineString);
   }
 }
 
@@ -85,7 +88,7 @@ function createPlayerLayout(length) {
 
 function result(length) {
   if (!rout.includes(playerPosition)) {
-    bomb++;
+    health--;
     playerLayout[playerPosition] = 0;
     playerPosition = rout[0];
     playerLayout[playerPosition] = 3;
@@ -96,17 +99,23 @@ function result(length) {
   }
   if (playerPosition < length ** 2 && playerPosition > (length ** 2) - (length + 1)) {
     console.log("You Won!");
-    if (confirm("Wanna to play again?")) {
+    if (confirm("Wanna to play next?")) {
       bomb = 0;
+      mineLayout = [];
+      playerLayout = [];
+      playerPosition = 0;
+      rout = [];
+      level++;
+      health += level;
       main();
     } else {
-      bomb = chance;
+      bomb = health;
     }
   }
 }
 
 function play(length) {
-  while (bomb !== chance) {
+  while (health !== 0) {
     //console.log(playerPosition);
     const movements = "dasw";
     const playerMove = prompt("d a s w:");
@@ -125,8 +134,9 @@ function play(length) {
 
 function main() {
   console.clear();
-  const length = parseInt(prompt("Enter Length of Row:"));
-  chance = length;
+  // const length = parseInt(prompt("Enter Length of Row:"));
+  const length = level;
+  health = health === 0 ? length : health;
   const firstLayout = layoutPrint(length);
   rout = setRout(copyArray(firstLayout));
   // rout.reverse();
