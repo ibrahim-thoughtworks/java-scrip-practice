@@ -1,4 +1,7 @@
-const characters = "kzfdjoyuvmi ;nlphcrtwx'gesbaq:KFWUBTRVLOJAHZXIMYEGPQSDNC?/.>,<|}]{[+=_-)(*&^%$#@!" + '"\\';
+const characters = 
+	"kzfdjoyuvmi ;nlphcrtwx'gesbaq:KFWUBTRVLOJAHZXIMYEGPQSDNC?/.>,<|}]{[+=_-)(*&^%$#@!" + 
+	'"\\' +
+	"1325467098";
 ;
 const numberString = "abcdefghij";
 
@@ -17,33 +20,55 @@ function encrypt(text) {
   }
   return encryptedText + "." + incrementer;
 }
+
 function decrypt(text) {
   const englishAlphabetsLength = characters.length;
-  let incrementer = text.slice(text.indexOf(".") + 1, text.length);
-  let encryptedText = text.slice(0, text.indexOf("."));
+	const incrementerText = text.slice(text.lastIndexOf(".") + 1, text.length);
+	console.log(incrementerText);
+  let incrementer = parseInt(incrementerText);
+  let encryptedText = text.slice(0, text.lastIndexOf("."));
   const textLength = encryptedText.length;
 	let decryptedText = "";
 	incrementer -= textLength;
+
 	for (let index = 0; index < textLength; index++) {
 		const textIndex = characters.indexOf(text[index]);
 		const newTextIndex = Math.abs(englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
 		decryptedText += characters[newTextIndex];
+		console.log(textIndex,newTextIndex,incrementer,incrementerText);
 		incrementer++;
 	}
+
 	return decryptedText;
 }
 
 function encryptionManager(){
-	const userText = prompt("Input a text to encrypt:");
-  const encryptedText = encrypt(userText);
-  console.log(encryptedText);
+	const encryptionCount = 1 + Math.floor(Math.random() * 8);
+	let encryptedText = prompt("Input a text to encrypt:");
+
+	for (let currentCount = 0; currentCount < encryptionCount; currentCount++) {
+		encryptedText = encrypt(encryptedText);
+	}
+
+	encryptedText += numberString[encryptionCount];
+  console.log(encryptedText, 1);
 	return encryptedText;
 }
 
 function decryptionManager() {
 	const encryptedText = prompt("Enter Encrypted Text:");
-  const decryptedText = decrypt(encryptedText);
-	console.log(decryptedText);
+	const textLength = encryptedText.length;
+	const decryptionCount = numberString.indexOf(encryptedText[textLength - 1]);
+	let decryptedText = encryptedText.slice(0, textLength - 1);
+	console.log(decryptedText, decryptionCount);
+	console.log(characters);
+
+	for (let currentCount = 0; currentCount < decryptionCount; currentCount++) {
+		decryptedText = decrypt(decryptedText);
+		console.log(decryptedText);
+	}
+
+	console.log(decryptedText, decryptionCount);
   return encryptedText;
 }
 
