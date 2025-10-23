@@ -1,4 +1,5 @@
-const characters = "kzfdjoyuvmi ;nlphcrtwx'gesbaq";
+const characters = "kzfdjoyuvmi ;nlphcrtwx'gesbaq:KFWUBTRVLOJAHZXIMYEGPQSDNC?/.>,<|}]{[+=_-)(*&^%$#@!" + '"\\';
+;
 const numberString = "abcdefghij";
 
 function encrypt(text) {
@@ -7,16 +8,13 @@ function encrypt(text) {
   let incrementer = constantIncrementer;
   const textLength = text.length;
   let encryptedText = "";
-  console.log(text,textLength);
 
   for (let index = 0; index < textLength; index++) {
     const textIndex = characters.indexOf(text[index]);
     const newTextIndex = (textIndex + incrementer) % englishAlphabetsLength;
     encryptedText += characters[newTextIndex];
-    console.log(textIndex,characters[textIndex],newTextIndex,characters[newTextIndex],"incre:",incrementer);
     incrementer++;
   }
-  console.log("hii", encryptedText, constantIncrementer, incrementer);
   return encryptedText + "." + incrementer;
 }
 function decrypt(text) {
@@ -24,25 +22,39 @@ function decrypt(text) {
   let incrementer = text.slice(text.indexOf(".") + 1, text.length);
   let encryptedText = text.slice(0, text.indexOf("."));
   const textLength = encryptedText.length;
-  console.log("const", incrementer, "enc", encryptedText);
 	let decryptedText = "";
 	incrementer -= textLength;
 	for (let index = 0; index < textLength; index++) {
 		const textIndex = characters.indexOf(text[index]);
 		const newTextIndex = Math.abs(englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
 		decryptedText += characters[newTextIndex];
-		console.log(textIndex,characters[textIndex],newTextIndex,characters[newTextIndex],"inc",incrementer);
 		incrementer++;
 	}
+	return decryptedText;
+}
+
+function encryptionManager(){
+	const userText = prompt("Input a text to encrypt:");
+  const encryptedText = encrypt(userText);
+  console.log(encryptedText);
+	return encryptedText;
+}
+
+function decryptionManager() {
+	const encryptedText = prompt("Enter Encrypted Text:");
+  const decryptedText = decrypt(encryptedText);
 	console.log(decryptedText);
+  return encryptedText;
 }
 
 function main() {
-  const userText = prompt("Input a text:");
-  const encryptedText = encrypt(userText);
-  console.log(encryptedText);
-  const decryptedText = decrypt(encryptedText);
-  return encryptedText;
+	const task = prompt("Encryption / Decrytion[e/d]:");
+
+	if (task === "e") {
+		return encryptionManager();
+	}
+
+	return decryptionManager();
 }
 
 main();
