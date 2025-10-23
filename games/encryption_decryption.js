@@ -29,7 +29,7 @@ function decrypt(text) {
 	incrementer -= textLength;
 	for (let index = 0; index < textLength; index++) {
 		const textIndex = characters.indexOf(text[index]);
-		const newTextIndex = (englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
+		const newTextIndex = Math.abs(englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
 		decryptedText += characters[newTextIndex];
 		console.log(textIndex,characters[textIndex],newTextIndex,characters[newTextIndex],"inc",incrementer);
 		incrementer++;
