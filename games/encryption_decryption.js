@@ -3,15 +3,17 @@ const numberString = "abcdefghij";
 
 function encrypt(text) {
   const englishAlphabetsLength = characters.length;
-  const constantIncrementer = 1 + Math.floor(Math.random() * 100);
+  const constantIncrementer = 1 + Math.floor(Math.random() * englishAlphabetsLength);
   let incrementer = constantIncrementer;
   const textLength = text.length;
   let encryptedText = "";
+  console.log(text,textLength);
 
   for (let index = 0; index < textLength; index++) {
     const textIndex = characters.indexOf(text[index]);
     const newTextIndex = (textIndex + incrementer) % englishAlphabetsLength;
     encryptedText += characters[newTextIndex];
+    console.log(textIndex,characters[textIndex],newTextIndex,characters[newTextIndex],"incre:",incrementer);
     incrementer++;
   }
   console.log("hii", encryptedText, constantIncrementer, incrementer);
@@ -19,20 +21,20 @@ function encrypt(text) {
 }
 function decrypt(text) {
   const englishAlphabetsLength = characters.length;
-  const textLength = text.length;
-  const constantIncrementer = text.slice(text.indexOf(".") + 1, textLength);
+  let incrementer = text.slice(text.indexOf(".") + 1, text.length);
   let encryptedText = text.slice(0, text.indexOf("."));
-  console.log("const", constantIncrementer, "enc", encryptedText);
-  // let incrementer = constantIncrementer;
-
-  // for (let index = 0; index < textLength; index++) {
-  //   const textIndex = characters.indexOf(text[index]);
-  //   const newTextIndex = (textIndex + incrementer) % englishAlphabetsLength;
-  //   encryptedText += characters[newTextIndex];
-  //   incrementer++;
-  // }
-  // console.log("hii", encryptedText, constantIncrementer, incrementer);
-  // return encryptedText + "." + incrementer;
+  const textLength = encryptedText.length;
+  console.log("const", incrementer, "enc", encryptedText);
+	let decryptedText = "";
+	incrementer -= textLength;
+	for (let index = 0; index < textLength; index++) {
+		const textIndex = characters.indexOf(text[index]);
+		const newTextIndex = (englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
+		decryptedText += characters[newTextIndex];
+		console.log(textIndex,characters[textIndex],newTextIndex,characters[newTextIndex],"inc",incrementer);
+		incrementer++;
+	}
+	console.log(decryptedText);
 }
 
 function main() {
