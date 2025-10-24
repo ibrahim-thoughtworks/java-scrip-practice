@@ -26,6 +26,9 @@ function decrypt(text) {
 	const incrementerText = text.slice(text.lastIndexOf(".") + 1, text.length);
 	console.log(incrementerText);
   let incrementer = parseInt(incrementerText);
+  if (incrementer < 0) {
+    Deno.exit();
+  }
   let encryptedText = text.slice(0, text.lastIndexOf("."));
   const textLength = encryptedText.length;
 	let decryptedText = "";
@@ -33,9 +36,14 @@ function decrypt(text) {
 
 	for (let index = 0; index < textLength; index++) {
 		const textIndex = characters.indexOf(text[index]);
-		const newTextIndex = Math.abs(englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
+		// const newTextIndex = Math.abs(englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
+		let newTextIndex = (englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
+    newTextIndex = newTextIndex < 0 ? englishAlphabetsLength + newTextIndex : newTextIndex;
 		decryptedText += characters[newTextIndex];
-		console.log(textIndex,newTextIndex,incrementer,incrementerText);
+		console.log(textIndex,newTextIndex,incrementer,incrementerText, englishAlphabetsLength, characters[newTextIndex]);
+    if (isNaN(incrementer)) {
+      Deno.exit();
+    }
 		incrementer++;
 	}
 
