@@ -24,11 +24,7 @@ function encrypt(text) {
 function decrypt(text) {
   const englishAlphabetsLength = characters.length;
 	const incrementerText = text.slice(text.lastIndexOf(".") + 1, text.length);
-	console.log(incrementerText);
   let incrementer = parseInt(incrementerText);
-  if (incrementer < 0) {
-    Deno.exit();
-  }
   let encryptedText = text.slice(0, text.lastIndexOf("."));
   const textLength = encryptedText.length;
 	let decryptedText = "";
@@ -36,14 +32,9 @@ function decrypt(text) {
 
 	for (let index = 0; index < textLength; index++) {
 		const textIndex = characters.indexOf(text[index]);
-		// const newTextIndex = Math.abs(englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
 		let newTextIndex = (englishAlphabetsLength + textIndex - incrementer) % englishAlphabetsLength;
     newTextIndex = newTextIndex < 0 ? englishAlphabetsLength + newTextIndex : newTextIndex;
 		decryptedText += characters[newTextIndex];
-		console.log(textIndex,newTextIndex,incrementer,incrementerText, englishAlphabetsLength, characters[newTextIndex]);
-    if (isNaN(incrementer)) {
-      Deno.exit();
-    }
 		incrementer++;
 	}
 
@@ -59,6 +50,7 @@ function encryptionManager(){
 	}
 
 	encryptedText += numberString[encryptionCount];
+  console.clear();
   console.log(encryptedText, 1);
 	return encryptedText;
 }
@@ -68,15 +60,13 @@ function decryptionManager() {
 	const textLength = encryptedText.length;
 	const decryptionCount = numberString.indexOf(encryptedText[textLength - 1]);
 	let decryptedText = encryptedText.slice(0, textLength - 1);
-	console.log(decryptedText, decryptionCount);
-	console.log(characters);
 
 	for (let currentCount = 0; currentCount < decryptionCount; currentCount++) {
 		decryptedText = decrypt(decryptedText);
-		console.log(decryptedText);
 	}
 
-	console.log(decryptedText, decryptionCount);
+  console.clear();
+	console.log(decryptedText);
   return encryptedText;
 }
 
