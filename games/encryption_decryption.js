@@ -10,6 +10,7 @@ function encrypt(text) {
   const engLetterSize = characters.length;
   const constantIncrementer = 1 + Math.floor(Math.random() * engLetterSize);
   let incrementer = constantIncrementer;
+  const incrementAdder = 1 + Math.floor(Math.random() * 8);
   const textLength = text.length;
   let encryptedText = "";
 
@@ -17,35 +18,36 @@ function encrypt(text) {
     const textIndex = characters.indexOf(text[index]);
     const newTextIndex = (textIndex + incrementer) % engLetterSize;
     encryptedText += characters[newTextIndex];
-    incrementer++;
+    incrementer += incrementAdder;
   }
-  return encryptedText + "." + incrementer;
+  return encryptedText + "." + incrementer + incrementAdder;
 }
 
-function decryptLetters(incrementer, textLength, text, decryptedText) {
+function crackLetters(updater, txtSize, text, decryptedTxt, incAdder) {
   const engLetterSize = characters.length;
-  incrementer -= textLength;
+  updater -= txtSize * incAdder;
 
-  for (let index = 0; index < textLength; index++) {
+  for (let index = 0; index < txtSize; index++) {
     const textIndex = characters.indexOf(text[index]);
-    let newIndex = (engLetterSize + textIndex - incrementer) % engLetterSize;
+    let newIndex = (engLetterSize + textIndex - updater) % engLetterSize;
     newIndex = newIndex < 0 ? engLetterSize + newIndex : newIndex;
-    decryptedText += characters[newIndex];
-    incrementer++;
+    decryptedTxt += characters[newIndex];
+    updater += incAdder;
   }
   
-  return decryptedText;
+  return decryptedTxt;
 }
 
 function decrypt(text) {
-	const incrementerText = text.slice(text.lastIndexOf(".") + 1, text.length);
-  let incrementer = parseInt(incrementerText);
+	const incTxt = text.slice(text.lastIndexOf(".") + 1, text.length - 1);
+  const incAdder = parseInt(text.slice(text.length - 1, text.length))
+  let updater = parseInt(incTxt);
   let encryptedText = text.slice(0, text.lastIndexOf("."));
-  const textLength = encryptedText.length;
-	let decryptedText = "";
-	decryptedText = decryptLetters(incrementer, textLength, text, decryptedText);
+  const txtSize = encryptedText.length;
+	let decreptedTxt = "";
+	decreptedTxt = crackLetters(updater, txtSize, text, decreptedTxt, incAdder);
 
-	return decryptedText;
+	return decreptedTxt;
 }
 
 function dotManager(text) {
