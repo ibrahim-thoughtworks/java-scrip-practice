@@ -49,14 +49,15 @@ function encryptionManager(){
 		encryptedText = encrypt(encryptedText);
 	}
 
-	encryptedText += numberString[encryptionCount];
+	encryptedText = '"' + encryptedText + numberString[encryptionCount] + '"';
   console.clear();
-  console.log(encryptedText, 1);
+  console.log(encryptedText);
 	return encryptedText;
 }
 
 function decryptionManager() {
-	const encryptedText = prompt("Enter Encrypted Text:");
+	let encryptedText = prompt("Enter Encrypted Text:");
+  encryptedText = encryptedText.slice(1,encryptedText.length - 1);
 	const textLength = encryptedText.length;
 	const decryptionCount = numberString.indexOf(encryptedText[textLength - 1]);
 	let decryptedText = encryptedText.slice(0, textLength - 1);
@@ -67,7 +68,7 @@ function decryptionManager() {
 
   console.clear();
 	console.log(decryptedText);
-  return encryptedText;
+  return decryptedText;
 }
 
 function main() {
