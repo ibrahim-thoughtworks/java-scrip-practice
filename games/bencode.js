@@ -12,7 +12,6 @@ function bencodeList(list) {
   const bencryptedList = [];
 
   for (let index = 0; index < listLength; index++) {
-    const type = typeof (data);
     bencryptedList.push(encode(list[index]));
   }
 
@@ -30,8 +29,6 @@ function encode(data) {
     case "object":
       return bencodeList(data);
   }
-
-  console.log(type);
 }
 
 function unBencodeNumber(data, index) {
@@ -71,7 +68,7 @@ function decode(data) {
     } else {
       returningData = unBencodeString(data, index);
     }
-    decodedData.push(returningData[0] === undefined ? "" : returningData [0]);
+    decodedData.push(returningData[0] === undefined ? "" : returningData[0]);
     index = returningData[1];
     dataCount++;
   }
