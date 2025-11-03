@@ -31,20 +31,34 @@ function encode(data) {
   }
 }
 
-function unBencodeNumber(data, index) {
+function decodeNumber(data, index) {
   const endIndex = data.indexOf("e", index);
-  return [parseInt(data.slice(index + 1, endIndex)), endIndex];
+  const decodedNumber = parseInt(data.slice(index + 1, endIndex))
+  return [decodedNumber, endIndex];
 }
 
-function unBencodeString(data, index) {
+function decodeString(data, index) {
   const lastIndex = parseInt(data[index]) + index + 2;
-  return [data.slice(index + 2, lastIndex), lastIndex - 1];
+  const decodedString = data.slice(index + 2, lastIndex);
+  return [decodedString, lastIndex - 1];
 }
 
 function unBencodeList(data, index) {
   const dataLength = data.length;
   const decodedLIst = decode(data.slice(index + 1, dataLength));
-  return [decodedLIst[0], decodedLIst[1] + index + 1];
+  const endIndexOfList = decodedLIst[1] + index + 1
+  return [decodedLIst[0], endIndexOfList];
+}
+
+function decodeOtherTypes(typeOfData, data, index) {
+  if (typeOfData === "i") {
+    return decodeNumber(data, index);
+  } else if (typeOfData === "l") {
+    const returningData = unBencodeList(data, index);
+    return [returningData[0], returningData[1]];
+  } else {
+    return decodeString(data, index);
+  }
 }
 
 function decode(data) {
@@ -54,19 +68,13 @@ function decode(data) {
 
   for (let index = 0; index < dataLength; index++) {
     const typeOfData = data[index];
-    let returningData = [];
 
-    if (typeOfData === "i") {
-      returningData = unBencodeNumber(data, index);
-    } else if (typeOfData === "l") {
-      returningData = unBencodeList(data, index);
-      returningData = [returningData[0], returningData[1]];
-    } else if (typeOfData === "e") {
+    if (typeOfData === "e") {
       return [decodedData, index];
-    } else {
-      returningData = unBencodeString(data, index);
     }
-    decodedData.push(returningData[0] === undefined ? "" : returningData[0]);
+
+    const returningData = decodeOtherTypes(typeOfData, data, index);
+    decodedData.push(returningData[0]);
     index = returningData[1];
     dataCount++;
   }
