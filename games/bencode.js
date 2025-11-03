@@ -1,3 +1,6 @@
+const NUMBER = "number";
+const STRING = "string";
+
 function bencodeNumber(number) {
   return "i" + number + "e";
 }
@@ -22,12 +25,15 @@ function encode(data) {
   const type = typeof (data);
 
   switch (type) {
-    case "number":
+    case NUMBER:
       return bencodeNumber(data);
-    case "string":
+    case STRING:
       return bencodeString(data);
-    case "object":
-      return bencodeList(data);
+  }
+
+  if (Array.isArray(data)) {
+    return bencodeList(data);
+
   }
 }
 
@@ -46,7 +52,7 @@ function decodeString(data, index) {
 function unBencodeList(data, index) {
   const dataLength = data.length;
   const decodedLIst = decode(data.slice(index + 1, dataLength));
-  const endIndexOfList = decodedLIst[1] + index + 1
+  const endIndexOfList = decodedLIst[1] + index + 1;
   return [decodedLIst[0], endIndexOfList];
 }
 
@@ -64,9 +70,9 @@ function decodeOtherTypes(typeOfData, data, index) {
 function decode(data) {
   const dataLength = data.length;
   const decodedData = [];
-  let dataCount = 0;
+  let index = 0;
 
-  for (let index = 0; index < dataLength; index++) {
+  while (index < dataLength) {
     const typeOfData = data[index];
 
     if (typeOfData === "e") {
@@ -75,38 +81,61 @@ function decode(data) {
 
     const returningData = decodeOtherTypes(typeOfData, data, index);
     decodedData.push(returningData[0]);
-    index = returningData[1];
-    dataCount++;
+    index = returningData[1] + 1;
   }
 
   return decodedData.length === 1 ? decodedData[0] : decodedData;
 }
 
-function main(data) {
-  console.log(data);
-  const encoded = encode(data);
-  console.log(encoded);
-  const decoded = decode(encoded);
-  console.log("dec", decoded);
+function msg(descr, actRes, expRes, i1 = "", i2 = "") {
+  const input1 = "Encoding Data";                          // inputs name
+  const input2 = "";                         // inputs name
+  const isSameResult = (actRes + "" === expRes + "");
+  const symbol = isSameResult ? "✅" : "❌";
+  let inputs = `\t${input1}: ${i1} \n\t${input2}: ${i2}`; //inputs Section:
+  let inputPlace = symbol + descr;
+  inputPlace += (isSameResult ? "" : "\n" + inputs);
+  let outputFragment = "\n\n\tgot: " + actRes;
+  outputFragment += "\n\texpected: " + expRes;
+  const message = isSameResult ? inputPlace : inputPlace + outputFragment;
+  console.log(message + "\n\n");
 }
 
-main([1, 2, 3, [123], 1, 2]);
-main([1, 2, 3, [123], 1, 2, [3], "5783"]);
+function encodeTesting(descr, i1, expRes) {
+  const result = encode(i1);
+  console.log(result);
+  msg(descr, result, expRes, i1);
+}
 
-console.log(encode(123));          // → "i123e"
-console.log(decode("i123e"));      // → 123
+function encodeTestCases() {
+  console.log("Encoding \n ----------------\n")
+  encodeTesting("Number", 123, "i123e");
+  encodeTesting("String", "kidding", "7:kidding");
+  encodeTesting("String", "kidding", "7:kidding");
+  encodeTesting("Number list", [1, 2, 3], "li1ei2ei3ee");
+  encodeTesting("Number and string list", [1, 2, 3, "Badusha"], "li1ei2ei3e7:Badushae");
+  encodeTesting("Nested list", [1, 2, 3, ["Badusha"]], "li1ei2ei3el7:Badushaee");
+  encodeTesting("Nested list", [1, 2, 3, ["Badusha"], 567], "li1ei2ei3el7:Badushaei567ee");
+}
 
-console.log(encode("hello"));      // → "5:hello"
-console.log(decode("5:hello"));    // → "hello"
+encodeTestCases();
 
-console.log(encode([1, "two", ["three", 4]])); // → "li1e3:twol5:threei4eee"
-console.log("dec", decode("li1e3:twol5:threei4eee")); // → [1, "two", ["three", 4]]
+function decodeTesting(descr, expRes, i1) {
+  const result = decode(i1);
+  console.log(result);
+  msg(descr, result, expRes, i1);
+}
 
-console.log(encode([]));           // → "le"
-console.log(decode("le"));         // → []
+function decodeTestCases() {
+  console.log("Decoding \n ----------------\n")
+  decodeTesting("Number", 123, "i123e");
+  decodeTesting("String", "kidding", "7:kidding");
+  decodeTesting("String", "kidding", "7:kidding");
+  decodeTesting("Number list", [1, 2, 3], "li1ei2ei3ee");
+  decodeTesting("Number and string list", [1, 2, 3, "Badusha"], "li1ei2ei3e7:Badushae");
+  decodeTesting("Nested list", [1, 2, 3, ["Badusha"]], "li1ei2ei3el7:Badushaee");
+  decodeTesting("Nested list", [1, 2, 3, ["Badusha"], 567], "li1ei2ei3el7:Badushaei567ee");
+  decodeTesting("empty list", [], "le");
+}
 
-// Edge Cases (you should consider these in your implementation)
-console.log(encode(0));            // → "i0e"
-console.log(decode("i0e"));        // → 0
-console.log(encode(""));           // → "0:"
-console.log(decode("0:"));         // → ""
+decodeTestCases();
