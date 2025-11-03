@@ -42,13 +42,9 @@ function unBencodeString(data, index) {
 }
 
 function unBencodeList(data, index) {
-  const decodedLIst = [];
   const dataLength = data.length;
-
-  for (let currentIndex = index; currentIndex < dataLength; currentIndex++) {
-
-  }
-  return [decode(data.slice(index + 1, dataLength - 1)), dataLength - 1];
+  const decodedLIst = decode(data.slice(index + 1, dataLength));
+  return [decodedLIst[0], decodedLIst[1] + index + 1];
 }
 
 function decode(data) {
@@ -65,6 +61,8 @@ function decode(data) {
     } else if (typeOfData === "l") {
       returningData = unBencodeList(data, index);
       returningData = [returningData[0], returningData[1]];
+    } else if (typeOfData === "e") {
+      return [decodedData, index];
     } else {
       returningData = unBencodeString(data, index);
     }
@@ -75,6 +73,17 @@ function decode(data) {
 
   return decodedData.length === 1 ? decodedData[0] : decodedData;
 }
+
+function main(data) {
+  console.log(data);
+  const encoded = encode(data);
+  console.log(encoded);
+  const decoded = decode(encoded);
+  console.log("dec", decoded);
+}
+
+main([1, 2, 3, [123], 1, 2]);
+main([1, 2, 3, [123], 1, 2, [3], "5783"]);
 
 console.log(encode(123));          // → "i123e"
 console.log(decode("i123e"));      // → 123
